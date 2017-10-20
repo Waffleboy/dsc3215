@@ -90,12 +90,12 @@ def calculate_fixed_cost_optimal_qty(K,mean,variance,price,cost,holding_cost,sho
         lhs = calculate_optimal_profit(w,price,cost,holding_cost,shortage_penalty)
 
     # recompute proper profit - EDDY FIX THIS PLEASE
-    if leadtime:
-        profit_s = actual_leadtime**(1/2) * sd * calculate_optimal_profit(w_star,price,cost,holding_cost,shortage_penalty)
-        profit_mew_sd = actual_leadtime**(1/2) * sd * calculate_optimal_profit(w,price,cost,holding_cost,shortage_penalty)
-    else:
-        profit_s =  sd * calculate_optimal_profit(w_star,price,cost,holding_cost,shortage_penalty)
-        profit_mew_sd = sd * calculate_optimal_profit(w,price,cost,holding_cost,shortage_penalty)
+#    if leadtime:
+#        profit_s = actual_leadtime**(1/2) * sd * calculate_optimal_profit(w_star,price,cost,holding_cost,shortage_penalty)
+#        profit_mew_sd = actual_leadtime**(1/2) * sd * calculate_optimal_profit(w,price,cost,holding_cost,shortage_penalty)
+#    else:
+#        profit_s =  sd * calculate_optimal_profit(w_star,price,cost,holding_cost,shortage_penalty)
+#        profit_mew_sd = sd * calculate_optimal_profit(w,price,cost,holding_cost,shortage_penalty)
 
     # optimal re order point:
     if leadtime:
@@ -104,13 +104,13 @@ def calculate_fixed_cost_optimal_qty(K,mean,variance,price,cost,holding_cost,sho
         optimal_re_order = mean + w*sd
 
     ## round everything to 2dp
-    profit_mew_sd,profit_s= round(profit_mew_sd,2),round(profit_s,2)
+    #profit_mew_sd,profit_s= round(profit_mew_sd,2),round(profit_s,2)
     optimal_re_order,optimal_order_point  = round(optimal_re_order,2),round(optimal_order_point,2)
 
     print("For Leadtime: {}".format(leadtime))
     print("With fixed cost K of ${} USD:".format(K))
-    print("Optimal Re Order Point: {} Profit: ${}".format(optimal_re_order,profit_mew_sd))
-    print("Optimal Order Up to Level: {} Profit: ${}".format(optimal_order_point,profit_s))
+    print("Optimal Re Order Point: {}".format(optimal_re_order))
+    print("Optimal Order Up to Level: {}".format(optimal_order_point))
     print('\n')
     return optimal_re_order,optimal_order_point
 

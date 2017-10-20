@@ -5,7 +5,7 @@ Created on Fri Oct 20 01:36:36 2017
 
 @author: thiru
 """
-
+import scipy.stats
 import os
 import pandas as pd
 import datetime
@@ -18,13 +18,29 @@ working_directory = "/storage/NUS_STUFF/LectureTutorials/IVLE/DSC3215/"
 dsc_data_filename = "dsc_data.csv"
 formatted_csv_filename = "formatted_dsc_data.csv"
 countries = ['Singapore','United States','India','Canada']
+# for simulated
+countries = {'Singapore':{"mean":334,"sd":100},
+            'United States':{"mean":350,"sd":110},
+            'India':{"mean":700,"sd":300},
+            'Canada':{"mean":300,"sd":90}
+            }
+
 
 #==============================================================================
 #                            Misc functions
 #==============================================================================
 
-def generate_own_data():
-    return
+def generate_own_data(countries):
+    lst = []
+    for country in countries:
+        temp_df = pd.DataFrame(index=[x for x in range(366)])
+        temp_df["country"] = country
+        temp_df["date"] = list(pd.date_range(start='01-01-2016',end='31-12-2016'))
+        temp_df["sales"] = scipy.stats.norm.rvs(loc=countries[country]["mean"],scale = countries[country]["sd"],size=366)
+        temp_df["sales"][temp_df["sales"] <0] = 0 #no negative sales
+        lst.append(temp_df)
+    df = pd.concat(lst)
+    return df
 
 
 # Convert the Tableau Data to 4 countries by year instead.

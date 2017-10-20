@@ -1,0 +1,5 @@
+Country,Unit Sale Price,Unit Order Cost,Unit Holding Cost,Unit Shortage Penalty,Fixed Order Cost,Leadtime (Days)
+Canada,1100,500,150,400,500,4
+Singapore,1200,600,100,500,700,5
+India,1350,550,50,350,5000,20
+United States,1000,600,150,400,1000,3
