@@ -17,7 +17,7 @@ import math
 #==============================================================================
 #                               Initial Settings
 #==============================================================================
-working_directory = "/storage/NUS_STUFF/LectureTutorials/IVLE/DSC3215/"
+working_directory = "/storage/NUS_STUFF/LectureTutorials/IVLE/DSC3215/project/"
 # Run helper if you dont have this.
 dsc_data_filename = "formatted_dsc_data.csv"
 dsc_data_settings = "dsc_data_settings.csv"

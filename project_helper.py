@@ -13,16 +13,16 @@ import datetime
 #==============================================================================
 #                               Initial Settings
 #==============================================================================
-working_directory = "/storage/NUS_STUFF/LectureTutorials/IVLE/DSC3215/"
+working_directory = "/storage/NUS_STUFF/LectureTutorials/IVLE/DSC3215/project/"
 # filepath to the raw data csv
 dsc_data_filename = "dsc_data.csv"
 formatted_csv_filename = "formatted_dsc_data.csv"
 countries = ['Singapore','United States','India','Canada']
 # for simulated
-countries = {'Singapore':{"mean":334,"sd":100},
-            'United States':{"mean":350,"sd":110},
-            'India':{"mean":700,"sd":300},
-            'Canada':{"mean":300,"sd":90}
+countries = {'Singapore':{"mean":334.65,"sd":97.58},
+            'United States':{"mean":350.88,"sd":107.98},
+            'India':{"mean":700.287,"sd":300.985},
+            'Canada':{"mean":300.29,"sd":90.728}
             }
 
 
@@ -36,10 +36,12 @@ def generate_own_data(countries):
         temp_df = pd.DataFrame(index=[x for x in range(366)])
         temp_df["country"] = country
         temp_df["date"] = list(pd.date_range(start='01-01-2016',end='31-12-2016'))
+        print(country)
         temp_df["sales"] = scipy.stats.norm.rvs(loc=countries[country]["mean"],scale = countries[country]["sd"],size=366)
         temp_df["sales"][temp_df["sales"] <0] = 0 #no negative sales
         lst.append(temp_df)
-    df = pd.concat(lst)
+    df = pd.concat(lst,axis=0)
+    df = df.reset_index()
     return df
 
 
@@ -76,8 +78,8 @@ def save_dataframe(df,working_directory):
 
 #==============================================================================
 # run
-#==============================================================================
-if __name__ == '__main__':
-    data = pd.read_csv(working_directory + dsc_data_filename)
-    df = pd.read_csv(working_directory+dsc_data_filename)
-    df = convert_tableau_data_to_dsc(df,True)
+##==============================================================================
+#if __name__ == '__main__':
+#    data = pd.read_csv(working_directory + dsc_data_filename)
+#    df = pd.read_csv(working_directory+dsc_data_filename)
+#    df = convert_tableau_data_to_dsc(df,True)
