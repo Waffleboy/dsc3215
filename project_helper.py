@@ -50,10 +50,10 @@ def generate_own_data(countries):
 def convert_tableau_data_to_dsc(data_df,save=False):
     global working_directory,formatted_csv_filename,countries
     selected_cols = ['sales','country','order_date']
-    data["Order Date"] = pd.to_datetime(data["Order Date"])
+    data_df["Order Date"] = pd.to_datetime(data_df["Order Date"])
     # convert all to 2016.
-    data["Order Date"] = data["Order Date"].map(lambda x: datetime.date(2016,x.month,x.day))
-    available_years = list(set([x.year for x in data["Order Date"]]))
+    data_df["Order Date"] = data_df["Order Date"].map(lambda x: datetime.date(2016,x.month,x.day))
+    available_years = list(set([x.year for x in data_df["Order Date"]]))
     available_years.sort() #keep consistent
     lst = []
     for i in range(len(available_years)):
@@ -74,6 +74,69 @@ def convert_tableau_data_to_dsc(data_df,save=False):
 
 def save_dataframe(df,working_directory):
     df.to_csv(working_directory,index=False)
+
+#==============================================================================
+# Plot fake data
+#==============================================================================
+import seaborn as sns
+def plot():
+    global working_directory,formatted_csv_filename
+    df = pd.read_csv(working_directory+formatted_csv_filename)
+    countries = list(df["country"].unique())
+    for country in countries:
+        current_country_df = df[df["country"] == country]
+        sales = current_country_df["sales"]
+        ax = sales.plot('hist',bins=13,title = "Sales Histogram for {}".format(country),legend=True)
+        ax.set_xlabel("Sales in $USD")
+    L=ax.legend()
+    for i in range(len(L)):
+       entry.set_text(countries[i])
+
+def plot_cdf():
+    import pylab as pl
+    global working_directory,formatted_csv_filename
+    df = pd.read_csv(working_directory+formatted_csv_filename)
+    countries = list(df["country"].unique())
+    for country in countries:
+        current_country_df = df[df["country"] == country]
+        sales = current_country_df["sales"]
+        ax = sales.hist(cumulative=True,normed=True)
+        ax.set_xlabel("Sales Quantity")
+        ax.set_title("CDF of demand for {}".format(country))
+
+def plot_profit_curve():
+    global working_directory,formatted_csv_filename
+    df = pd.read_csv(working_directory+formatted_csv_filename)
+    dsc_data_settings = "dsc_data_settings.csv"
+    settings_df = pd.read_csv(working_directory+dsc_data_settings)
+    settings_df.index = settings_df["Country"]
+    del settings_df["Country"]
+    countries = list(df["country"].unique())
+    for country in countries:
+        settings_row = settings_df[settings_df.index == country].to_dict('records')[0]
+        price = settings_row["Unit Sale Price"]
+        cost = settings_row["Unit Order Cost"]
+        holding_cost = settings_row["Unit Holding Cost"]
+        shortage_penalty = settings_row["Unit Shortage Penalty"]
+
+        height = []
+        x_axis = []
+        current_country_df = df[df["country"] == country]
+        bin_count = 100
+        increments = max(current_country_df["sales"]) / bin_count
+        curr_cumulative_count = increments
+        for i in range(bin_count):
+            sub_df = current_country_df["sales"][current_country_df["sales"] <= curr_cumulative_count]
+            height.append(len(sub_df))
+            x_axis.append(curr_cumulative_count)
+            curr_cumulative_count += increments
+
+        height = [x / max(height) for x in height]
+
+        constant = -1*cost + price + shortage_penalty
+        constant2 =  (price + shortage_penalty + holding_cost)
+        profit_y = [(constant - constant2*x) for x in height]
+        plt.plot(x_axis,profit_y)
 
 
 #==============================================================================
