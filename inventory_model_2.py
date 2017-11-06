@@ -92,15 +92,19 @@ for country in unique_countries:
             total_profit_for_current_order_quantity -= fixed_order_cost
         order_quantity_array.append([order_quantity,total_profit_for_current_order_quantity])
 
-    # Maybe we should plot one for each country instead?
-    plt.plot([x[0] for x in order_quantity_array],[x[1] for x in order_quantity_array])
-    plt.ylabel('Profit in $USD')
-    plt.xlabel('Order Quantity')
-    plt.title('Profit Curve for {}'.format(country))
-
     max_point = max(order_quantity_array,key =lambda x:x[1])
-    plt.axvline(x=max_point[0],linestyle='--')
     dup_list = sorted(order_quantity_array, key = lambda x:x[1])
     text_x_axis = max_point[0] + 20
-    text_y_axis = dup_list[0][1]
-    plt.text(text_x_axis, text_y_axis,"Quantity: {}".format(max_point[0],verticalalignment='bottom', horizontalalignment='right',fontsize=12))
+    text_y_axis = dup_list[30][1]
+    formatted_profit = round(max_point[1],2)
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    # Maybe we should plot one for each country instead?
+    ax.plot([x[0] for x in order_quantity_array],[x[1] for x in order_quantity_array])
+    ax.set_ylabel('Profit in $USD')
+    ax.set_xlabel('Order Quantity')
+    ax.set_title('Profit Curve for {}'.format(country))
+    ax.axvline(x=max_point[0],linestyle='--')
+    ax.text(0.4, 0.2,"Profit: ${}\n\nQuantity: {}".format(formatted_profit,max_point[0]),verticalalignment='bottom', transform = ax.transAxes,horizontalalignment='left',fontsize=15)
+    plt.show()
