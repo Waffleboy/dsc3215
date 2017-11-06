@@ -8,7 +8,7 @@ Created on Fri Nov  3 17:03:21 2017
 import pandas as pd
 from matplotlib import pyplot as plt
 import seaborn as sns
-
+import numpy as np
 
 #==============================================================================
 #                               Initial Settings
@@ -88,8 +88,8 @@ for country in unique_countries:
                 temp.append([demand,profit])
 
         total_profit_for_current_order_quantity = sum([x[1] for x in temp])
-        if fixed_order_cost:
-            total_profit_for_current_order_quantity -= fixed_order_cost
+#        if fixed_order_cost:
+#            total_profit_for_current_order_quantity -= fixed_order_cost
         order_quantity_array.append([order_quantity,total_profit_for_current_order_quantity])
 
     max_point = max(order_quantity_array,key =lambda x:x[1])
@@ -105,6 +105,20 @@ for country in unique_countries:
     ax.set_ylabel('Profit in $USD')
     ax.set_xlabel('Order Quantity')
     ax.set_title('Profit Curve for {}'.format(country))
+
+    if fixed_order_cost:
+        new_y = max_point[1] - fixed_order_cost
+        #find reorder point
+        reorder_idx = 0
+        for i in range(max_point[0],0,-1):
+            if max_point[1] -  order_quantity_array[i][1] > fixed_order_cost:
+                reorder_idx = i
+                break
+        reorder_point = order_quantity_array[reorder_idx][0]
+
+        ax.axhline(y=new_y,linestyle='--')
+        ax.text(x=0.02,y=0.4,s="Reorder\nQuantity: {}".format(reorder_point),transform = ax.transAxes,fontsize=14)
+
     ax.axvline(x=max_point[0],linestyle='--')
-    ax.text(0.4, 0.2,"Profit: ${}\n\nQuantity: {}".format(formatted_profit,max_point[0]),verticalalignment='bottom', transform = ax.transAxes,horizontalalignment='left',fontsize=15)
+    ax.text(0.37, 0.2,"Profit: ${}\n\nOrder Up To Quantity: {}".format(formatted_profit,max_point[0]),verticalalignment='bottom', transform = ax.transAxes,horizontalalignment='left',fontsize=15)
     plt.show()

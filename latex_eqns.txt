@@ -1,0 +1,2 @@
+\sigma \left [ w(h+c) + (p+h+b) \int_{w}^{\infty}(t-w)\frac{1}{\sqrt{2\pi}}e^{^{\frac{-t^2}{2}}}dt  \right ] - \sigma \left [ w^{*}(h+c) + (p+h+b) \int_{w^{*}}^{\infty}(t-w^{*})\frac{1}{\sqrt{2\pi}}e^{^{\frac{-t^2}{2}}}dt  \right ]
+
