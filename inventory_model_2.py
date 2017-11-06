@@ -13,8 +13,8 @@ import seaborn as sns
 #==============================================================================
 #                               Initial Settings
 #==============================================================================
-#working_directory = "/storage/NUS_STUFF/LectureTutorials/IVLE/DSC3215/project/"
-working_directory = "/Users/jingyu/Dropbox/DSC3215/dsc3215/"
+working_directory = "/storage/NUS_STUFF/LectureTutorials/IVLE/DSC3215/project/"
+#working_directory = "/Users/jingyu/Dropbox/DSC3215/dsc3215/"
 # Run helper if you dont have this.
 dsc_data_filename = "formatted_dsc_data.csv"
 dsc_data_settings = "dsc_data_settings.csv"
@@ -63,7 +63,7 @@ for country in unique_countries:
 
 
     #order_quantity_range = [x for x in range(1,max_demand+1)]
-    order_quantity_range = [x for x in range(1,max_demand+1)]
+    order_quantity_range = [x for x in range(1,max_demand*2)]
 
     #O(n^2) loop
     order_quantity_array = []
@@ -75,20 +75,32 @@ for country in unique_countries:
             try:
                 demand_probability = prob_dist[demand]
             except:
-                demand_probability = 0
+                continue
 
             # check if order_quantity < demand (revenue will be order_qty*price instead of demand*price)
             if demand <= order_quantity:
                 #profit = demand*price*demand_probability - cost*order_quantity - calculate_holding_cost(holding_cost,order_quantity,demand,demand_probability) - calculate_shortage_cost(shortage_penalty,order_quantity,demand,demand_probability)
                 profit = demand*price*demand_probability - cost*order_quantity*demand_probability - calculate_holding_cost(holding_cost,order_quantity,demand,demand_probability) - calculate_shortage_cost(shortage_penalty,order_quantity,demand,demand_probability)
-                temp.append([demand,max(0,profit)])
+                temp.append([demand,profit])
             else:
                 #profit = order_quantity*price*demand_probability - cost*order_quantity - calculate_holding_cost(holding_cost,order_quantity,demand,demand_probability) - calculate_shortage_cost(shortage_penalty,order_quantity,demand,demand_probability)
                 profit = order_quantity*price*demand_probability - cost*order_quantity*demand_probability - calculate_holding_cost(holding_cost,order_quantity,demand,demand_probability) - calculate_shortage_cost(shortage_penalty,order_quantity,demand,demand_probability)
-                temp.append([demand,max(0,profit)])
+                temp.append([demand,profit])
 
         total_profit_for_current_order_quantity = sum([x[1] for x in temp])
+        if fixed_order_cost:
+            total_profit_for_current_order_quantity -= fixed_order_cost
         order_quantity_array.append([order_quantity,total_profit_for_current_order_quantity])
 
     # Maybe we should plot one for each country instead?
     plt.plot([x[0] for x in order_quantity_array],[x[1] for x in order_quantity_array])
+    plt.ylabel('Profit in $USD')
+    plt.xlabel('Order Quantity')
+    plt.title('Profit Curve for {}'.format(country))
+
+    max_point = max(order_quantity_array,key =lambda x:x[1])
+    plt.axvline(x=max_point[0],linestyle='--')
+    dup_list = sorted(order_quantity_array, key = lambda x:x[1])
+    text_x_axis = max_point[0] + 20
+    text_y_axis = dup_list[0][1]
+    plt.text(text_x_axis, text_y_axis,"Quantity: {}".format(max_point[0],verticalalignment='bottom', horizontalalignment='right',fontsize=12))

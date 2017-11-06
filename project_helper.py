@@ -86,7 +86,7 @@ def plot():
     for country in countries:
         current_country_df = df[df["country"] == country]
         sales = current_country_df["sales"]
-        ax = sales.plot('hist',bins=13,title = "Sales Histogram for {}".format(country),legend=True)
+        ax = sales.plot('hist',bins=10,title = "Sales Histogram for {}".format(country),legend=True)
         ax.set_xlabel("Sales in $USD")
     L=ax.legend()
     for i in range(len(L)):

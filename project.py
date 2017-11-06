@@ -131,8 +131,8 @@ for country in countries:
     print("-"*7 + "For {}".format(country) + '-'*7)
     df_subset = df[df["country"] == country]
     settings_row = settings_df[settings_df.index == country].to_dict('records')[0]
-    sales_mean = df["sales"].mean()
-    sales_variance = df["sales"].var()
+    sales_mean = df_subset["sales"].mean()
+    sales_variance = df_subset["sales"].var()
 
     price = settings_row["Unit Sale Price"]
     cost = settings_row["Unit Order Cost"]
